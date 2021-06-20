@@ -4,7 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using CustomerLib.Business.Entities;
 using CustomerLib.Business.Enums;
-using CustomerLib.Data.Extensions;
+using CustomerLib.Business.Extensions;
 
 namespace CustomerLib.Data.Repositories.Implementations
 {

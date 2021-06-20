@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data;
 
-namespace CustomerLib.Data.Extensions
+namespace CustomerLib.Business.Extensions
 {
 	public static class DataRecordExtensions
 	{
