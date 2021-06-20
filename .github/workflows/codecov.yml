@@ -14,7 +14,7 @@ jobs:
               run: dotnet build --no-restore
 
             - name: Test
-              run: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=TestResults/ /p:Exclude="[*.Data*]*"
+              run: dotnet test --filter FullyQualifiedName!~IntegrationTests /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=TestResults/ /p:Exclude="[*.Data]*"
 
             - name: Upload to Codecov
               uses: codecov/codecov-action@v1
