@@ -95,6 +95,45 @@ namespace CustomerLib.Data.Repositories.Implementations
 			command.ExecuteNonQuery();
 		}
 
+		public bool IsEmailTaken(string email)
+		{
+			using var connection = GetSqlConnection();
+			connection.Open();
+
+			var command = new SqlCommand(
+				"SELECT CASE WHEN EXISTS (SELECT * FROM [dbo].[Customers] " +
+				"WHERE[Email] = @Email) " +
+				"THEN CAST(1 AS BIT) " +
+				"ELSE CAST(0 AS BIT) " +
+				"END", connection);
+
+			command.Parameters.Add(GetEmailParameter(email));
+
+			var result = command.ExecuteScalar();
+			var isEmailTaken = (bool)result;
+
+			return isEmailTaken;
+		}
+
+		public (bool, int) IsEmailTakenWithCustomerId(string email)
+		{
+			using var connection = GetSqlConnection();
+			connection.Open();
+
+			var command = new SqlCommand(
+				"SELECT [CustomerId] FROM [dbo].[Customers] " +
+				"WHERE[Email] = @Email ", connection);
+
+			command.Parameters.Add(GetEmailParameter(email));
+
+			var result = command.ExecuteScalar();
+
+			var isTaken = result is not null;
+			var takenById = isTaken ? (int)result : 0;
+
+			return (isTaken, takenById);
+		}
+
 		public static void DeleteAll()
 		{
 			using var connection = GetSqlConnection();

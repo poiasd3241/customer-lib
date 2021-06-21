@@ -186,17 +186,21 @@ namespace CustomerLib.Business.Tests.Validators
 
 	public class CustomerValidatorFixture
 	{
-		public static Customer MockCustomer() => new()
+		/// <returns>The mocked customer with valid properties 
+		/// (according to <see cref="CustomerValidator"/>), optional properties not null.</returns>
+		public static Customer MockCustomer(string email = "john@doe.com") => new()
 		{
 			FirstName = "a",
 			LastName = "a",
 			Addresses = new() { AddressValidatorFixture.MockAddress() },
 			PhoneNumber = "+123",
-			Email = "my@email.com",
+			Email = email,
 			Notes = new() { NoteValidatorFixture.MockNote() },
 			TotalPurchasesAmount = 123,
 		};
 
+		/// <returns>The mocked customer with valid properties 
+		/// (according to <see cref="CustomerValidator"/>), optional properties null.</returns>
 		public static Customer MockOptionalCustomer() => new()
 		{
 			FirstName = null,

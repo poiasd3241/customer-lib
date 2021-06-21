@@ -21,6 +21,7 @@ namespace CustomerLib.Data.IntegrationTests.Repositories
 		[Fact]
 		public void ShouldCreateAddress()
 		{
+			// Given
 			var addressRepository = new AddressRepository();
 			var customer = CustomerRepositoryFixture.CreateMockCustomer();
 			AddressRepository.DeleteAll();
@@ -29,17 +30,21 @@ namespace CustomerLib.Data.IntegrationTests.Repositories
 			var address = AddressRepositoryFixture.MockAddress();
 			address.CustomerId = customer.CustomerId;
 
+			// When, Then
 			addressRepository.Create(address);
 		}
 
 		[Fact]
 		public void ShouldReadAddressNotFound()
 		{
+			// Given
 			var addressRepository = new AddressRepository();
 			AddressRepository.DeleteAll();
 
+			// When
 			var readAddress = addressRepository.Read(1);
 
+			// Then
 			Assert.Null(readAddress);
 		}
 
@@ -56,11 +61,14 @@ namespace CustomerLib.Data.IntegrationTests.Repositories
 		[ClassData(typeof(CreateMockAddressData))]
 		public void ShouldReadAddressIncludingNullOptionalFields(Func<Address> createMockAddress)
 		{
+			// Given
 			var addressRepository = new AddressRepository();
 			var address = createMockAddress.Invoke();
 
+			// When
 			var readAddress = addressRepository.Read(1);
 
+			// Then
 			Assert.NotNull(readAddress);
 			Assert.Equal(address.CustomerId, readAddress.CustomerId);
 			Assert.Equal(address.AddressLine, readAddress.AddressLine);
@@ -75,11 +83,14 @@ namespace CustomerLib.Data.IntegrationTests.Repositories
 		[Fact]
 		public void ShouldReadAllAddressesByCustomer()
 		{
+			// Given
 			var addressRepository = new AddressRepository();
 			var address = AddressRepositoryFixture.CreateMockAddress(2);
 
+			// When
 			var readAddresses = addressRepository.ReadAllByCustomer(address.CustomerId);
 
+			// Then
 			Assert.NotNull(readAddresses);
 			Assert.Equal(2, readAddresses.Count);
 
@@ -99,26 +110,31 @@ namespace CustomerLib.Data.IntegrationTests.Repositories
 		[Fact]
 		public void ShouldReadAllAddressesByCustomerNotFound()
 		{
+			// Given
 			var addressRepository = new AddressRepository();
 			AddressRepository.DeleteAll();
 
+			// When
 			var readAddresses = addressRepository.ReadAllByCustomer(1);
 
+			// Then
 			Assert.Null(readAddresses);
 		}
 
 		[Fact]
 		public void ShouldUpdateAddress()
 		{
+			// Given
 			var addressRepository = new AddressRepository();
 			var address = AddressRepositoryFixture.CreateMockAddress();
 
 			var createdAddress = addressRepository.Read(1);
 			createdAddress.AddressLine = "New line!";
 
-			// Update.
+			// When
 			addressRepository.Update(createdAddress);
 
+			// Then
 			var updatedAddress = addressRepository.Read(1);
 
 			Assert.NotNull(updatedAddress);
@@ -135,22 +151,49 @@ namespace CustomerLib.Data.IntegrationTests.Repositories
 		[Fact]
 		public void ShouldDeleteAddress()
 		{
+			// Given
 			var addressRepository = new AddressRepository();
 			AddressRepositoryFixture.CreateMockAddress();
 
 			var createdAddress = addressRepository.Read(1);
 			Assert.NotNull(createdAddress);
 
-			// Delete.
+			// When
 			addressRepository.Delete(1);
 
+			// Then
 			var deletedAddress = addressRepository.Read(1);
 			Assert.Null(deletedAddress);
+		}
+
+		[Fact]
+		public void ShouldDeleteAddressesByCustomerId()
+		{
+			// Given
+			var addressRepository = new AddressRepository();
+			AddressRepositoryFixture.CreateMockAddress(2);
+
+			var createdAddresses = addressRepository.ReadAllByCustomer(1);
+			Assert.Equal(2, createdAddresses.Count);
+
+			// When
+			addressRepository.DeleteByCustomer(1);
+
+			// Then
+			var deletedAddresses = addressRepository.ReadAllByCustomer(1);
+			Assert.Null(deletedAddresses);
 		}
 	}
 
 	public class AddressRepositoryFixture
 	{
+		/// <summary>
+		/// Creates the specified amount of mocked addresses with repo-relevant valid properties, 
+		/// optional properties not null, <see cref="Address.CustomerId"/> = 1.
+		/// </summary>
+		/// <param name="amount">The amount of addresses to create.</param>
+		/// <returns>The mocked address with repo-relevant valid properties, 
+		/// optional properties null, <see cref="Address.CustomerId"/> = 1.</returns>
 		public static Address CreateMockAddress(int amount = 1)
 		{
 			var addressRepository = new AddressRepository();
@@ -169,6 +212,8 @@ namespace CustomerLib.Data.IntegrationTests.Repositories
 			return address;
 		}
 
+		/// <returns>The mocked address with repo-relevant valid properties, 
+		/// optional properties null, <see cref="Address.CustomerId"/> = 1.</returns>
 		public static Address CreateMockOptionalAddress()
 		{
 			var addressRepository = new AddressRepository();
@@ -184,6 +229,8 @@ namespace CustomerLib.Data.IntegrationTests.Repositories
 			return address;
 		}
 
+		/// <returns>The mocked address with repo-relevant valid properties,
+		/// optional properties not null.</returns>
 		public static Address MockAddress() => new()
 		{
 			AddressLine = "one",
@@ -195,6 +242,8 @@ namespace CustomerLib.Data.IntegrationTests.Repositories
 			Country = "United States"
 		};
 
+		/// <returns>The mocked address with repo-relevant valid properties,
+		/// optional properties null.</returns>
 		public static Address MockOptionalAddress()
 		{
 			var mockAddress = MockAddress();

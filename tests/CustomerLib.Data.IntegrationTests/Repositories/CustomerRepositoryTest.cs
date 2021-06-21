@@ -19,21 +19,26 @@ namespace CustomerLib.Data.IntegrationTests.Repositories
 		[Fact]
 		public void ShouldCreateCustomer()
 		{
+			// Given
 			var customerRepository = new CustomerRepository();
 			CustomerRepository.DeleteAll();
 			var customer = CustomerRepositoryFixture.MockCustomer();
 
+			// When, Then
 			customerRepository.Create(customer);
 		}
 
 		[Fact]
 		public void ShouldReadCustomerNotFound()
 		{
+			// Given
 			var customerRepository = new CustomerRepository();
 			CustomerRepository.DeleteAll();
 
+			// When
 			var readCustomer = customerRepository.Read(1);
 
+			// Then
 			Assert.Null(readCustomer);
 		}
 
@@ -50,11 +55,14 @@ namespace CustomerLib.Data.IntegrationTests.Repositories
 		[ClassData(typeof(CreateMockCustomerData))]
 		public void ShouldReadCustomerIncludingNullOptionalFields(Func<Customer> createMockCustomer)
 		{
+			// Given
 			var customerRepository = new CustomerRepository();
 			var customer = createMockCustomer.Invoke();
 
+			// When
 			var readCustomer = customerRepository.Read(1);
 
+			// Then
 			Assert.NotNull(readCustomer);
 			Assert.Equal(customer.FirstName, readCustomer.FirstName);
 			Assert.Equal(customer.LastName, readCustomer.LastName);
@@ -69,15 +77,17 @@ namespace CustomerLib.Data.IntegrationTests.Repositories
 		[Fact]
 		public void ShouldUpdateCustomer()
 		{
+			// Given
 			var customerRepository = new CustomerRepository();
 			var customer = CustomerRepositoryFixture.CreateMockCustomer();
 
 			var createdCustomer = customerRepository.Read(1);
 			createdCustomer.FirstName = "New FN";
 
-			// Update.
+			// When
 			customerRepository.Update(createdCustomer);
 
+			// Then
 			var updatedCustomer = customerRepository.Read(1);
 
 			Assert.NotNull(updatedCustomer);
@@ -94,34 +104,81 @@ namespace CustomerLib.Data.IntegrationTests.Repositories
 		[Fact]
 		public void ShouldDeleteCustomer()
 		{
+			// Given
 			var customerRepository = new CustomerRepository();
 			CustomerRepositoryFixture.CreateMockCustomer();
 
 			var createdCustomer = customerRepository.Read(1);
 			Assert.NotNull(createdCustomer);
 
-			// Delete.
+			// When
 			customerRepository.Delete(1);
 
+			// Then
 			var deletedCustomer = customerRepository.Read(1);
 			Assert.Null(deletedCustomer);
+		}
+
+		class EmailTakenData : TheoryData<string, bool>
+		{
+			public EmailTakenData()
+			{
+				Add("taken@asd.com", true);
+				Add("free@asd.com", false);
+			}
+		}
+
+		[Theory]
+		[ClassData(typeof(EmailTakenData))]
+		public void ShouldCheckForEmailTaken(string email, bool isTakenExpected)
+		{
+			// Given
+			var customerRepository = new CustomerRepository();
+			CustomerRepositoryFixture.CreateMockCustomer("taken@asd.com");
+
+			// When
+			var isTakenActual = customerRepository.IsEmailTaken(email);
+
+			// Then
+			Assert.Equal(isTakenExpected, isTakenActual);
+		}
+
+		[Theory]
+		[ClassData(typeof(EmailTakenData))]
+		public void ShouldCheckForEmailTakenWithCustomerId(string email, bool isTakenExpected)
+		{
+			// Given
+			var customerRepository = new CustomerRepository();
+			CustomerRepositoryFixture.CreateMockCustomer("taken@asd.com");
+
+			// When
+			var (isTakenActual, takenById) = customerRepository.IsEmailTakenWithCustomerId(email);
+
+			// Then
+			Assert.Equal(isTakenExpected, isTakenActual);
+			Assert.Equal(isTakenActual ? 1 : 0, takenById);
 		}
 	}
 
 	public class CustomerRepositoryFixture
 	{
-		public static Customer CreateMockCustomer()
+		/// <returns>The mocked customer with repo-relevant valid properties, 
+		/// optional properties not null, <see cref="Customer.CustomerId"/> = 1.</returns>
+		public static Customer CreateMockCustomer(string email = "john@doe.com")
 		{
 			var customerRepository = new CustomerRepository();
 			CustomerRepository.DeleteAll();
 
-			var customer = MockCustomer();
+			var customer = MockCustomer(email);
 			customerRepository.Create(customer);
 
 			// Simulate identity.
 			customer.CustomerId = 1;
 			return customer;
 		}
+
+		/// <returns>The mocked customer with repo-relevant valid properties,
+		/// optional properties null, <see cref="Customer.CustomerId"/> = 1.</returns>
 		public static Customer CreateMockOptionalCustomer()
 		{
 			var customerRepository = new CustomerRepository();
@@ -135,15 +192,19 @@ namespace CustomerLib.Data.IntegrationTests.Repositories
 			return customer;
 		}
 
-		public static Customer MockCustomer() => new()
+		/// <returns>The mocked customer with repo-relevant valid properties,
+		/// optional properties not null.</returns>
+		public static Customer MockCustomer(string email = "john@doe.com") => new()
 		{
 			FirstName = "John",
 			LastName = "Doe",
 			PhoneNumber = "+12345",
-			Email = "john@doe.com",
+			Email = email,
 			TotalPurchasesAmount = 123
 		};
 
+		/// <returns>The mocked customer with repo-relevant valid properties,
+		/// optional properties null.</returns>
 		public static Customer MockOptionalCustomer() => new()
 		{
 			FirstName = null,

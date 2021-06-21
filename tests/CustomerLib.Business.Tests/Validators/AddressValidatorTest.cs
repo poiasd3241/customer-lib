@@ -149,6 +149,8 @@ namespace CustomerLib.Business.Tests.Validators
 
 	public class AddressValidatorFixture
 	{
+		/// <returns>The mocked address with valid properties 
+		/// (according to <see cref="AddressValidator"/>), optional properties not null.</returns>
 		public static Address MockAddress() => new()
 		{
 			AddressLine = "line",
@@ -160,6 +162,8 @@ namespace CustomerLib.Business.Tests.Validators
 			Country = "United States"
 		};
 
+		/// <returns>The mocked address with valid properties 
+		/// (according to <see cref="AddressValidator"/>), optional properties null.</returns>
 		public static Address MockOptionalAddress() => new()
 		{
 			AddressLine = "line",

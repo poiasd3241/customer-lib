@@ -63,6 +63,8 @@ namespace CustomerLib.Business.Tests.Validators
 
 	public class NoteValidatorFixture
 	{
+		/// <returns>The mocked note with valid properties 
+		/// (according to <see cref="NoteValidator"/>).</returns>
 		public static Note MockNote() => new()
 		{
 			Content = "text"

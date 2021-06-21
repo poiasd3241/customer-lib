@@ -10,5 +10,6 @@ namespace CustomerLib.Data.Repositories
 		List<Address> ReadAllByCustomer(int customerId);
 		void Update(Address address);
 		void Delete(int addressId);
+		void DeleteByCustomer(int customerId);
 	}
 }
