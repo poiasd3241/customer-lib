@@ -27,7 +27,7 @@ jobs:
             - name: Upload to Codecov
               uses: codecov/codecov-action@v1
               with:
-                  files: ./ReportGenerator/*.xml
+                  files: ./ReportGenerator/Cobertura.xml
                   flags: unittests
                   name: codecov-umbrella
                   fail_ci_if_error: true
