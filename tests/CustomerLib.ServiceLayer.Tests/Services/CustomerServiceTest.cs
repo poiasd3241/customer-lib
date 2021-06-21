@@ -1,6 +1,5 @@
 ﻿using System;
 using CustomerLib.Business.Entities;
-using CustomerLib.Business.Enums;
 using CustomerLib.Business.Exceptions;
 using CustomerLib.Data.Repositories;
 using CustomerLib.ServiceLayer.Services;
