@@ -14,7 +14,7 @@ jobs:
               run: dotnet build --no-restore
 
             - name: Test
-              run: dotnet test --filter FullyQualifiedName!~IntegrationTests /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=TestResults/ /p:Exclude=\"[*.Data]*,[*]*Exceptions.*\"
+              run: dotnet test --filter FullyQualifiedName!~IntegrationTests /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=TestResults/ /p:Exclude=\"[*.Data]*,[*]*Exceptions.*,[*Tests]*\"
 
             - name: ReportGenerator
               uses: danielpalme/ReportGenerator-GitHub-Action@4.5.8
