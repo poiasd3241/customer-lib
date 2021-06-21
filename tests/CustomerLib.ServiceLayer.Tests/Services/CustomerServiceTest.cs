@@ -1,7 +1,7 @@
 ﻿using System;
 using CustomerLib.Business.Entities;
+using CustomerLib.Business.Enums;
 using CustomerLib.Business.Exceptions;
-using CustomerLib.Business.Tests.Validators;
 using CustomerLib.Data.Repositories;
 using CustomerLib.ServiceLayer.Services;
 using CustomerLib.ServiceLayer.Services.Implementations;
@@ -316,8 +316,16 @@ namespace CustomerLib.ServiceLayer.Tests.Services
 
 	public class CustomerServiceFixture
 	{
-		public static Customer MockCustomer(string email = "john@doe.com") =>
-			CustomerValidatorFixture.MockCustomer(email);
+		public static Customer MockCustomer(string email = "john@doe.com") => new()
+		{
+			FirstName = "a",
+			LastName = "a",
+			Addresses = new() { AddressServiceFixture.MockAddress() },
+			PhoneNumber = "+123",
+			Email = email,
+			Notes = new() { NoteServiceFixture.MockNote() },
+			TotalPurchasesAmount = 123,
+		};
 
 		public static Mock<ICustomerRepository> MockCustomerRepository() =>
 				new(MockBehavior.Strict);

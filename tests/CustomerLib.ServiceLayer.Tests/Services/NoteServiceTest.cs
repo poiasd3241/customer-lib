@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using CustomerLib.Business.Entities;
 using CustomerLib.Business.Exceptions;
-using CustomerLib.Business.Tests.Validators;
 using CustomerLib.Data.Repositories;
 using CustomerLib.ServiceLayer.Services.Implementations;
 using Moq;
@@ -269,7 +268,11 @@ namespace CustomerLib.ServiceLayer.Tests.Services
 
 	public class NoteServiceFixture
 	{
-		public static Note MockNote() => NoteValidatorFixture.MockNote();
+		public static Note MockNote() => new()
+		{
+			Content = "text"
+		};
+
 		public static List<Note> MockNotes() => new() { MockNote(), MockNote() };
 
 		public static Mock<INoteRepository> MockNoteRepository() => new(MockBehavior.Strict);

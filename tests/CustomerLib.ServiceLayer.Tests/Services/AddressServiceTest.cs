@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using CustomerLib.Business.Entities;
+using CustomerLib.Business.Enums;
 using CustomerLib.Business.Exceptions;
-using CustomerLib.Business.Tests.Validators;
 using CustomerLib.Data.Repositories;
 using CustomerLib.ServiceLayer.Services.Implementations;
 using Moq;
@@ -319,7 +319,17 @@ namespace CustomerLib.ServiceLayer.Tests.Services
 
 	public class AddressServiceFixture
 	{
-		public static Address MockAddress() => AddressValidatorFixture.MockAddress();
+		public static Address MockAddress() => new()
+		{
+			AddressLine = "line",
+			AddressLine2 = "line2",
+			Type = AddressType.Shipping,
+			City = "city",
+			PostalCode = "code",
+			State = "state",
+			Country = "United States"
+		};
+
 		public static List<Address> MockAddresses() => new() { MockAddress(), MockAddress() };
 
 		public static Mock<IAddressRepository> MockAddressRepository() => new(MockBehavior.Strict);

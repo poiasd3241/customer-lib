@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -28,7 +28,6 @@
     <ProjectReference Include="..\..\src\CustomerLib.Business\CustomerLib.Business.csproj" />
     <ProjectReference Include="..\..\src\CustomerLib.Data\CustomerLib.Data.csproj" />
     <ProjectReference Include="..\..\src\CustomerLib.ServiceLayer\CustomerLib.ServiceLayer.csproj" />
-    <ProjectReference Include="..\CustomerLib.Business.Tests\CustomerLib.Business.Tests.csproj" />
   </ItemGroup>
 
 </Project>
